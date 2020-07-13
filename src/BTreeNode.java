@@ -1,13 +1,15 @@
+import java.util.ArrayList;
+
 class BTreeNode {
 
     /**
      * Array of the keys stored in the node.
      */
-    long[] keys;
+    ArrayList<Long> keys;
     /**
      * Array of the values[recordID] stored in the node. This will only be filled when the node is a leaf node.
      */
-    long[] values;
+    ArrayList<Long> values;
     /**
      * Minimum degree (defines the range for number of keys)
      **/
@@ -16,7 +18,7 @@ class BTreeNode {
      * Pointers to the children, if this node is not a leaf.  If
      * this node is a leaf, then null.
      */
-    BTreeNode[] children;
+    ArrayList<BTreeNode> children;
     /**
      * number of key-value pairs in the B-tree
      */
@@ -35,10 +37,10 @@ class BTreeNode {
     BTreeNode(int t, boolean leaf) {
         this.t = t;
         this.leaf = leaf;
-        this.keys = new long[2 * t - 1];
-        this.children = new BTreeNode[2 * t];
+        this.keys = new ArrayList<Long>(2 * t - 1);
+        this.children = new ArrayList<BTreeNode>(2 * t);
         this.n = 0;
         this.next = null;
-        this.values = new long[2 * t - 1];
+        this.values = new ArrayList<Long>(2 * t - 1);
     }
 }
