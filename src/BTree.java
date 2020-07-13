@@ -38,11 +38,25 @@ class BTree {
     }
 
     BTree insert(Student student) {
+
+        /*
+        * PSEUDOCODE:
+        *  - Find the correct leaf node L; i.e. the leaf with the correct search key range
+           - Insert data entry in L
+                - If L has space, DONE!
+                - Else, split L (into L and a new node L2)
+                    - Redistribute keys evenly, copy up middle key
+                    - Insert index entry pointing to L2 into parent of L
+        * */
+
         /**
          * TODO:
          * Implement this function to insert in the B+Tree.
          * Also, insert in student.csv after inserting in B+Tree.
          */
+
+
+
         return this;
     }
 
