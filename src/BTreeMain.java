@@ -1,5 +1,10 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,12 +32,14 @@ public class BTreeMain {
 
         /** Read the minimum degree of B+Tree first */
 
-        int degree = scan.nextInt();
+         int degree = scan.nextInt();
 
-        BTree bTree = new BTree(degree);
+         BTree bTree = new BTree(1);
 
         /** Reading the database student.csv into B+Tree Node*/
         List<Student> studentsDB = getStudents();
+
+        System.out.println(studentsDB);
 
         for (Student s : studentsDB) {
             bTree.insert(s);
@@ -106,6 +113,34 @@ public class BTreeMain {
          */
 
         List<Student> studentList = new ArrayList<>();
+
+        // Set path to file
+        Path pathToFile = Paths.get("Student.csv");
+
+        // Create BufferedReader
+        try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
+
+        String line = br.readLine();
+
+            while (line != null) {
+
+                // Split the data from CSV and assign to array
+                String[] attributes = line.split(",");
+
+                // Create a new Student object with parsed data
+                Student student = new Student(Integer.parseInt(attributes[0]), Integer.parseInt(attributes[4]),
+                        attributes[1], attributes[2], attributes[3], Integer.parseInt(attributes[5]));
+
+                // Add student to studentList
+                studentList.add(student);
+
+                line = br.readLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return studentList;
     }
 }

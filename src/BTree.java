@@ -45,8 +45,10 @@ class BTree {
            - Insert data entry in L
                 - If L has space, DONE!
                 - Else, split L (into L and a new node L2)
-                    - Redistribute keys evenly, copy up middle key
+                    - Redistribute keys evenly, copy up middle key (maybe not, see link)
                     - Insert index entry pointing to L2 into parent of L
+
+                    * Note: See https://piazza.com/class/kazti64mw836ud?cid=211 for more details.
         * */
 
         /**
