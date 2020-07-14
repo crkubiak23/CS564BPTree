@@ -61,6 +61,23 @@ class BTree {
     }
 
     boolean delete(long studentId) {
+
+        /*
+         - Find the correct leaf node L where entry belongs
+         - Remove the entry
+            - If L is at least half-full, DONE!
+            - If L has only d-1 entries
+                - Try to redistribute, borrowing from sibling
+                - If redistribution fails, merge L and sibling
+         - If a merge occurred, delete an entry from parent of L
+         - Merge could propagate to root, decreasing height
+         - Try redistribution with all siblings first, then merge.
+            - Good chance that redistribution is possible (large fan-out)
+            - Only need to propagate changes to the immediate parent node
+            - Reduces likelihood of split on subsequent insertions (files typically grow, not shrink)
+                - Since pages would have more space on them
+         */
+
         /**
          * TODO:
          * Implement this function to delete in the B+Tree.

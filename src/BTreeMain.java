@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -12,6 +13,9 @@ import java.util.Scanner;
 public class BTreeMain {
 
     public static void main(String[] args) {
+
+        /** Create Random number generator**/
+        Random rand = new Random();
 
         /** Read the input file -- input.txt */
         Scanner scan = null;
@@ -51,8 +55,8 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /** TODO: Write a logic to generate recordID*/
-                            long recordID = ;
+                            /** DONE -- TODO: Write a logic to generate recordID*/
+                            long recordID = rand.nextLong();
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
