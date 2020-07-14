@@ -107,7 +107,7 @@ public class BTreeMain {
 
     private static List<Student> getStudents() {
 
-        /** TODO:
+        /** DONE -- TODO:
          * Extract the students information from "Students.csv"
          * return the list<Students>
          */

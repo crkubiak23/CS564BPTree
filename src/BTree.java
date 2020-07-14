@@ -94,11 +94,29 @@ class BTree {
         List<Long> listOfRecordID = new ArrayList<>();
 
         /**
-         * TODO:
+         * DONE -- TODO:
          * Implement this function to print the B+Tree.
          * Return a list of recordIDs from left to right of leaf nodes.
          *
          */
+
+        // Start at root
+        BTreeNode currentNode = this.root;
+
+        // While node has a child, move to the child node
+        while(!root.children.isEmpty()) {
+            currentNode = root.children.get(0);
+        }
+
+        // Start by going through current node, and move to next node if applicable
+        do {
+            // Add all the values (recordIDs) of the current node to list
+            for (int i = 0; i < currentNode.values.size(); i++) {
+                listOfRecordID.add(currentNode.values.get(i));
+            }
+        } while (currentNode.next != null);
+
         return listOfRecordID;
     }
+
 }
