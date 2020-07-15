@@ -117,6 +117,105 @@ class BTree {
          * Also, insert in student.csv after inserting in B+Tree.
          */
 
+    	// Check for empty tree
+		if(this.root == null) {
+			
+			// Create root node
+			this.root = new BTreeNode(this.t, true);
+		}
+		
+		if(this.root.n >= t * 2) {
+			BTreeNode newRoot = new BTreeNode(this.t, false);
+		newRoot.children.add(this.root);
+		this.root = newRoot;
+		splitNode(this.root, this.root.children.get(0));
+		}
+		
+		nodeInsert(this.root, student);
+		return this;
+}
+
+BTree nodeInsert(BTreeNode current, Student student) {
+	
+		int index = 0;
+		while(index < current.n && current.keys.get(index)<student.studentId) {
+		index++;
+	}
+		
+		// Place in leaf node
+		if(current.leaf) {
+			current.keys.add(index, student.studentId);
+		current.values.add(index, student.recordId);
+		current.n++;
+		return this;
+		}
+		
+		// Find child
+		BTreeNode child = current.children.get(index);
+		
+		// Child is full
+		if(child.n >= t * 2) {
+			splitNode(current, child);
+			return nodeInsert(current, student);
+		}
+		
+		// Insert into child
+		nodeInsert(child, student);
+		return this;
+}
+
+BTree splitNode(BTreeNode parent, BTreeNode split) {
+
+		// Create sibling node
+		BTreeNode sibling = new BTreeNode(this.t, split.leaf);
+		// Copy leaf data to sibling
+		sibling.keys = new ArrayList<Long>(split.keys);
+		sibling.values = new ArrayList<Long>(split.values);
+		sibling.n = split.n;
+		sibling.children = new ArrayList<BTreeNode>(split.children);
+		split.next = sibling;
+		
+		// Remove duplicate keys
+		for (int i = 0; i < t; i++) {
+			sibling.keys.remove(split.keys.get(i));
+			if(sibling.leaf) {
+				sibling.values.remove(split.values.get(i));
+			}
+			sibling.n--;
+	}
+		for (int i = t; i < split.keys.size(); i++) {
+			split.keys.remove(split.keys.get(i));
+			if(split.leaf) {
+				split.values.remove(split.values.get(i));
+			}
+			split.n--;
+	}
+		// Remove duplicate pointers
+		if(!split.leaf) {
+			for (int i = 0; i <= t; i++) {
+				sibling.children.remove(split.children.get(i));
+			}
+			for (int i = t + 1; i < split.children.size(); i++) {
+				split.children.remove(split.children.get(i));
+			}
+			if(sibling.children.size() != sibling.n + 1  && sibling.children.get(0).leaf) {
+			splitNode(sibling, sibling.children.get(sibling.n - 1));
+			sibling.keys.remove(sibling.keys.size() - 2);
+			sibling.n--;
+		}
+			else if(sibling.children.size() != sibling.n) {
+				splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
+			}
+		}
+		
+		// Move parent children
+		int childIndex = parent.children.indexOf(split) + 1;
+		parent.children.add(childIndex, sibling);
+		
+		// Move key to parent
+		parent.keys.add(sibling.keys.get(0));
+		parent.n++;
+	    		
 
         // TO PRINT A STUDENT TO THE CSV, CALL printStudentCSV(student)
 
