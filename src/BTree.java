@@ -246,9 +246,70 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
          * Also, delete in student.csv after deleting in B+Tree, if it exists.
          * Return true if the student is deleted successfully otherwise, return false.
          */
+      
+        // empty tree
+        BTreeNode currNode = this.root;
+      
+        return true;
+    }
+
+    boolean delete_recursion(BTreeNode parentNode, BTreeNode currNode, long studentId) {
+        
+        
+        //////if the current node is an internal node, then go down the tree to find child node///////
+        if(!currNode.leaf) {
+            
+            // if the current key matches the studentId
+            for(int i = 0; i < currNode.n; i++) {
+                if(studentId == currNode.keys.get(i) ) {
+                    // continue down the tree to find the correct node
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+    
+                // find the first key that is greater than studentId
+                else if (studentId < currNode.keys.get(i)) {
+                    // continue down the tree to find the correct node  
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+                //if the studentId is greater than the largest key of the current node
+                else if (studentId > currNode.keys.get(i) && i >= currNode.n - 1) {
+                    
+                    // continue down the tree to find the correct node
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+
+            }
+        }
+        //////////// if the current node is a child node/////////////////////////////////
+        else if(currNode.leaf) {
+            //find the key
+            for(int i = 0; i < currNode.n; i++) {
+                // if the key to be deleted is found. 
+                if(studentId == currNode.keys.get(i)) {
+                    // delete records
+                    currNode.values.remove(i);
+                    // delete key
+                    currNode.keys.remove(i);
+                    // decrement number of keys in leaf node
+                    --currNode.n;
+                }
+            }
+
+            // after removing key
+            //if the number of keys in the current node sastifies the min degree, done
+            if(currNode.n >= this.t) {
+                return true;
+            }
+            else {
+                // check if redistribution is possible
+            }
+
+        }
 
         return true;
     }
+
+    
 
     List<Long> print() {
 
