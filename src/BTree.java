@@ -45,31 +45,37 @@ class BTree {
             return -1;
         }
 
+        // set the root to be the current node
         BTreeNode currNode = this.root;
 
         for(int i = 0; i < currNode.n; i++) {
             
             //if the current node is not a leaf node
             if(!currNode.leaf) {
+                //search through the node to find matching studentId
 
                 // if the current key matches the studentId
                 if(studentId == currNode.keys.get(i) ) {
+                    //set the current node to the child node
                     currNode = currNode.children.get(i);
                     i = 0; // reset i for child node
                 }
 
                 // find the first key that is greater than studentId
                 else if (studentId < currNode.keys.get(i)) {
+                    // set the current node to the child node
                     currNode = currNode.children.get(i);
-                    i = 0; // reset i for child node 
+                    i = 0; // reset i counter for child node 
                 }
                 //if the studentId is greater than the largest key of the current node
                 else if (studentId > currNode.keys.get(i) && i >= currNode.n - 1) {
+                    //
                     currNode = currNode.children.get(i);
-                    i =0; // reset i for child node
+                    i = 0; // reset i counter for child node
                 }
             }
 
+            // if the current node is a leaf node
             else if(currNode.leaf) {
 
                 // found target studentId
@@ -264,15 +270,20 @@ class BTree {
          */
       
         // empty tree
+        if(this.root == null) {
+            return false;
+        }
+
+        // setting root node to curr node
         BTreeNode currNode = this.root;
-      
-        return true;
+        return delete_recursion(null, currNode, studentId);
     }
 
     boolean delete_recursion(BTreeNode parentNode, BTreeNode currNode, long studentId) {
         
+        ///////finding the correct leaf node//////////////////////////////////////////////////
         
-        //////if the current node is an internal node, then go down the tree to find child node///////
+        //////if the current node is an internal node, then go down the tree to find child node
         if(!currNode.leaf) {
             
             // if the current key matches the studentId
@@ -310,7 +321,8 @@ class BTree {
                     --currNode.n;
                 }
             }
-
+        ///////////////// finding the correct leaf node (end) ///////////////////////////
+        
             // after removing key
             //if the number of keys in the current node sastifies the min degree, done
             if(currNode.n >= this.t) {
