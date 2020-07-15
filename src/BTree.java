@@ -3,8 +3,13 @@
  * This is the class with the main function
  */
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +35,6 @@ class BTree {
     }
 
     long search(long studentId) {
-        /**
-         * TODO:
-         * Implement this function to search in the B+Tree.
-         * Return recordID for the given StudentID.
-         * Otherwise, print out a message that the given studentId has not been found in the table and return -1.
-         */
         /**
          * TODO:
          * Implement this function to search in the B+Tree.
@@ -148,6 +147,7 @@ class BTree {
          * Also, delete in student.csv after deleting in B+Tree, if it exists.
          * Return true if the student is deleted successfully otherwise, return false.
          */
+
         return true;
     }
 
@@ -210,4 +210,45 @@ class BTree {
         return true;
     }
 
+    boolean deleteStudentCSV (long studentID) {
+
+            // Convert long to String
+            String toDelete = String.valueOf(studentID);
+
+            // Set path to file
+            Path pathToFile = Paths.get("Student.csv");
+
+            // Iterate through the old file's students
+            // Create BufferedReader
+            try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
+
+                // Open a temporary file for writing to, and the old student.csv file
+                FileWriter newFileWTR = new FileWriter("newStudent.csv");
+
+                String line = br.readLine();
+
+                while (line != null) {
+
+                    // If studentID does not match this line, add the line to the new CSV
+                    if (!line.contains(toDelete)) {
+
+
+                    }
+
+
+                    // Set next line to be read
+                    line = br.readLine();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        //close the files
+        //remove the file
+        //rename the temporary file to the original filename
+
+        // Return true if no exceptions are thrown
+        return true;
+    }
 }
