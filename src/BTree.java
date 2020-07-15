@@ -121,28 +121,28 @@ class BTree {
 			this.root = new BTreeNode(this.t, true);
 		}
 
-		// If there are too many key/values in the tree, add the new node and split node
+		// If there are too many key/values in the root, add the new node and split node
 		if(this.root.n >= t * 2) {
-			BTreeNode newRoot = new BTreeNode(this.t, false);
-		    newRoot.children.add(this.root);
-		    this.root = newRoot;
-		    splitNode(this.root, this.root.children.get(0));
+			BTreeNode newRoot = new BTreeNode(this.t, false); // Create new root
+		    newRoot.children.add(this.root); // Add old root to new.children
+		    this.root = newRoot; // Make new root this.root
+		    splitNode(this.root, this.root.children.get(0)); // Split new as parent, old as child
 		}
 
-		// Call helper method
+		// Call helper method to insert student
 		nodeInsert(this.root, student);
 		return this;
     }
 
     BTree nodeInsert(BTreeNode current, Student student) {
 	
+    		// Find the index where the key belongs, this can be used for children if it is an internal node
 		int index = 0;
 		while(index < current.n && current.keys.get(index)<student.studentId) {
-
 			index++;
 		}
 		
-		// Place in leaf node
+		// Place in leaf node and return
 		if(current.leaf) {
 			current.keys.add(index, student.studentId);
 			current.values.add(index, student.recordId);
@@ -150,7 +150,7 @@ class BTree {
 			return this;
 		}
 		
-		// Find child
+		// Find child node where key belongs
 		BTreeNode child = current.children.get(index);
 		
 		// Child is full
@@ -162,17 +162,17 @@ class BTree {
 //				splitNode(this.root, this.root.children.get(0));
 //			}
 //			else {
-			splitNode(current, child);
+			splitNode(current, child); // Split full child into two children of current
 //			}
-			return nodeInsert(current, student);
+			return nodeInsert(current, student); // Call insert on freshly split node and return
 		}
 		
 		// Insert into child
-		nodeInsert(child, student);
+		nodeInsert(child, student); // Call insert on child (not full)
 		return this;
     }
 
-    BTree splitNode(BTreeNode parent, BTreeNode split) {
+    BTree splitNode(BTreeNode parent, BTreeNode split) { // Split is the full node to be split
 
 		// Create sibling node
 		BTreeNode sibling = new BTreeNode(this.t, split.leaf);
@@ -184,7 +184,7 @@ class BTree {
 		sibling.children = new ArrayList<BTreeNode>(split.children);
 		split.next = sibling;
 		
-		// Remove duplicate keys
+		// Remove duplicate keys from sibling (0 to t-1)
 		for (int i = 0; i < t; i++) {
 			sibling.keys.remove(split.keys.get(i));
 			if(sibling.leaf) {
@@ -192,7 +192,8 @@ class BTree {
 			}
 			sibling.n--;
 		}
-    
+		
+		// Remove duplicate keys from split (t to keys.size() - 1)
 		for (int i = t; i < split.keys.size(); i++) {
 			split.keys.remove(split.keys.get(i));
 			if(split.leaf) {
@@ -201,31 +202,36 @@ class BTree {
 			split.n--;
 		}
       
-		// Remove duplicate pointers
+		// Remove duplicate pointers if internal
 		if(!split.leaf) {
+			// From 0 to t for sibling
 			for (int i = 0; i <= t; i++) {
 				sibling.children.remove(split.children.get(i));
 			}
+			// From t + 1 to end for split
 			for (int i = t + 1; i < split.children.size(); i++) {
 				split.children.remove(split.children.get(i));
 			}
       
+			// This might need some work:
+			// if an internal node is being split, and the sibling has less than n + 1 child pointers, it will split one of the child's children to make sure the node meets the child requirements
 			if(sibling.children.size() != sibling.n + 1  ) { //&& sibling.children.get(0).leaf
 				splitNode(sibling, sibling.children.get(sibling.n - 1));
-				sibling.keys.remove(sibling.keys.size() - 2);
+				sibling.keys.remove(sibling.keys.size() - 2); // The above split adds another updated key to sibling, so remove the old one, and decrement the counter
 				sibling.n--;
 			}
       
+			// Not used currently
 			else if(sibling.children.size() != sibling.n) {
 				// splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
 			}
 		}
 		
-		// Move parent children
+		// Assign new child pointer from parent to sibling
 		int childIndex = parent.children.indexOf(split) + 1;
 		parent.children.add(childIndex, sibling);
 		
-		// Move key to parent
+		// Add sibling key to parent
 		parent.keys.add(sibling.keys.get(0));
 		parent.n++;
 
