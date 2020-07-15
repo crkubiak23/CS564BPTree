@@ -25,7 +25,7 @@ public class BTreeMain {
         /** Read the input file -- input.txt */
         Scanner scan = null;
         try {
-            scan = new Scanner(new File("src/input.txt"));
+            scan = new Scanner(new File("input.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
         }
@@ -63,7 +63,7 @@ public class BTreeMain {
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
                             /** DONE -- TODO: Write a logic to generate recordID*/
-                            long recordID = rand.nextLong();
+                            long recordID = Math.abs(rand.nextInt());
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
