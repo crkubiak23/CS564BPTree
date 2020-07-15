@@ -120,15 +120,18 @@ class BTree {
 			// Create root node
 			this.root = new BTreeNode(this.t, true);
 		}
-		
+
+		// If there are too many key/values in the tree, add the new node and split node
 		if(this.root.n >= t * 2) {
 			BTreeNode newRoot = new BTreeNode(this.t, false);
-		newRoot.children.add(this.root);
-		this.root = newRoot;
-		splitNode(this.root, this.root.children.get(0));
+		    newRoot.children.add(this.root);
+		    this.root = newRoot;
+		    splitNode(this.root, this.root.children.get(0));
 		}
-		
+
+		// Call helper method
 		nodeInsert(this.root, student);
+
 		return this;
 }
 
@@ -136,15 +139,15 @@ BTree nodeInsert(BTreeNode current, Student student) {
 	
 		int index = 0;
 		while(index < current.n && current.keys.get(index)<student.studentId) {
-		index++;
-	}
+		    index++;
+	    }
 		
 		// Place in leaf node
 		if(current.leaf) {
 			current.keys.add(index, student.studentId);
-		current.values.add(index, student.recordId);
-		current.n++;
-		return this;
+		    current.values.add(index, student.recordId);
+		    current.n++;
+		    return this;
 		}
 		
 		// Find child
@@ -165,6 +168,7 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 
 		// Create sibling node
 		BTreeNode sibling = new BTreeNode(this.t, split.leaf);
+
 		// Copy leaf data to sibling
 		sibling.keys = new ArrayList<Long>(split.keys);
 		sibling.values = new ArrayList<Long>(split.values);
@@ -179,14 +183,16 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 				sibling.values.remove(split.values.get(i));
 			}
 			sibling.n--;
-	}
+	    }
+
 		for (int i = t; i < split.keys.size(); i++) {
 			split.keys.remove(split.keys.get(i));
 			if(split.leaf) {
 				split.values.remove(split.values.get(i));
 			}
 			split.n--;
-	}
+	    }
+
 		// Remove duplicate pointers
 		if(!split.leaf) {
 			for (int i = 0; i <= t; i++) {
@@ -199,7 +205,7 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 			splitNode(sibling, sibling.children.get(sibling.n - 1));
 			sibling.keys.remove(sibling.keys.size() - 2);
 			sibling.n--;
-		}
+		    }
 			else if(sibling.children.size() != sibling.n) {
 				splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
 			}
@@ -212,9 +218,6 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 		// Move key to parent
 		parent.keys.add(sibling.keys.get(0));
 		parent.n++;
-	    		
-
-        // TO PRINT A STUDENT TO THE CSV, CALL printStudentCSV(student)
 
         return this;
     }
