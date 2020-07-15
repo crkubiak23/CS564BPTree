@@ -3,10 +3,7 @@
  * This is the class with the main function
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -315,14 +312,16 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
             String toDelete = String.valueOf(studentID);
 
             // Set path to file
-            Path pathToFile = Paths.get("Student.csv");
+            File oldFile = new File("student.csv");
+            Path pathToFile = Paths.get("student.csv");
 
             // Iterate through the old file's students
             // Create BufferedReader
             try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 
                 // Open a temporary file for writing to, and the old student.csv file
-                FileWriter newFileWTR = new FileWriter("newStudent.csv");
+                File newFile = new File("newStudent.csv");
+                FileWriter newFileWTR = new FileWriter(newFile);
 
                 String line = br.readLine();
 
@@ -330,20 +329,35 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 
                     // If studentID does not match this line, add the line to the new CSV
                     if (!line.contains(toDelete)) {
-
-
+                        newFileWTR.append(line + "\n");
                     }
-
 
                     // Set next line to be read
                     line = br.readLine();
                 }
 
+                // Close the files
+                newFileWTR.flush();
+                newFileWTR.close();
+
+                // Rename temporary file to new file
+                if (!newFile.renameTo(oldFile)) {
+                    System.out.println("Did not rename new student.csv successfully");
+                }
+
+                // Remove the temporary file
+                if (!newFile.delete()) {
+                    System.out.println("Could not delete old student.csv");
+                }
+
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        //close the files
+
+
         //remove the file
         //rename the temporary file to the original filename
 
