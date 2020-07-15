@@ -141,10 +141,10 @@ public class BTreeMain {
             e.printStackTrace();
         }
 
-        // TODO remove
-        for (Student student : studentList) {
-            System.out.println(student.studentName + ", " + student.studentId);
-        }
+        //  // TODO remove
+        //for (Student student : studentList) {
+        //    System.out.println(student.studentName + ", " + student.studentId);
+        //}
 
         return studentList;
     }
