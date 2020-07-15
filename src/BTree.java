@@ -3,6 +3,8 @@
  * This is the class with the main function
  */
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +60,27 @@ class BTree {
          */
 
 
+        // Add the student to student.csv
+        try {
+
+            // Create FileWriter object
+            FileWriter csvWriter = new FileWriter("student.csv", true);
+
+            // Add student object to CSV
+            csvWriter.append(student.studentId + ",");
+            csvWriter.append(student.studentName + ",");
+            csvWriter.append(student.major + ",");
+            csvWriter.append(student.level + ",");
+            csvWriter.append(student.age + ",");
+            csvWriter.append(student.recordId + "\n");
+
+            // Flush and close FileWriter
+            csvWriter.flush();
+            csvWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return this;
     }
