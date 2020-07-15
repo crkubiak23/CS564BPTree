@@ -60,27 +60,7 @@ class BTree {
          */
 
 
-        // Add the student to student.csv
-        try {
-
-            // Create FileWriter object
-            FileWriter csvWriter = new FileWriter("student.csv", true);
-
-            // Add student object to CSV
-            csvWriter.append(student.studentId + ",");
-            csvWriter.append(student.studentName + ",");
-            csvWriter.append(student.major + ",");
-            csvWriter.append(student.level + ",");
-            csvWriter.append(student.age + ",");
-            csvWriter.append(student.recordId + "\n");
-
-            // Flush and close FileWriter
-            csvWriter.flush();
-            csvWriter.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // TO PRINT A STUDENT TO THE CSV, CALL printStudentCSV(student)
 
         return this;
     }
@@ -140,6 +120,35 @@ class BTree {
         } while (currentNode.next != null);
 
         return listOfRecordID;
+    }
+
+    boolean printStudentCSV (Student student) {
+
+        // Add the student to student.csv
+        try {
+
+            // Create FileWriter object
+            FileWriter csvWriter = new FileWriter("student.csv", true);
+
+            // Add student object to CSV
+            csvWriter.append(student.studentId + ",");
+            csvWriter.append(student.studentName + ",");
+            csvWriter.append(student.major + ",");
+            csvWriter.append(student.level + ",");
+            csvWriter.append(student.age + ",");
+            csvWriter.append(student.recordId + "\n");
+
+            // Flush and close FileWriter
+            csvWriter.flush();
+            csvWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        // If no error is thrown, return true
+        return true;
     }
 
 }
