@@ -341,25 +341,24 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
                 newFileWTR.close();
 
                 // Rename temporary file to new file
+                oldFile = new File("student.csv");
+
+                // Remove the old file
+                if (!oldFile.delete()) {
+                    System.out.println("Could not delete old student.csv");
+                }
+
+                // Rename temporary file to new file
+                oldFile = new File("student.csv");
+
                 if (!newFile.renameTo(oldFile)) {
                     System.out.println("Did not rename new student.csv successfully");
                 }
 
-                // Remove the temporary file
-                if (!newFile.delete()) {
-                    System.out.println("Could not delete old student.csv");
-                }
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
-
-
-
-        //remove the file
-        //rename the temporary file to the original filename
 
         // Return true if no exceptions are thrown
         return true;
