@@ -3,10 +3,7 @@
  * This is the class with the main function
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -123,22 +120,17 @@ class BTree {
 			// Create root node
 			this.root = new BTreeNode(this.t, true);
 		}
-		
-		if(this.root.n >= t * 2 ) { //this.root.children.isEmpty() && 
+
+		// If there are too many key/values in the tree, add the new node and split node
+		if(this.root.n >= t * 2) {
 			BTreeNode newRoot = new BTreeNode(this.t, false);
-			newRoot.children.add(this.root);
-			this.root = newRoot;
-			splitNode(this.root, this.root.children.get(0));
+		    newRoot.children.add(this.root);
+		    this.root = newRoot;
+		    splitNode(this.root, this.root.children.get(0));
 		}
-		
+
+		// Call helper method
 		nodeInsert(this.root, student);
-		
-//		if(this.root.n >= t * 2) {
-//			BTreeNode newRoot = new BTreeNode(this.t, false);
-//			newRoot.children.add(this.root);
-//			this.root = newRoot;
-//			splitNode(this.root, this.root.children.get(0));
-//		}
 		return this;
     }
 
@@ -146,6 +138,7 @@ class BTree {
 	
 		int index = 0;
 		while(index < current.n && current.keys.get(index)<student.studentId) {
+
 			index++;
 		}
 		
@@ -183,6 +176,7 @@ class BTree {
 
 		// Create sibling node
 		BTreeNode sibling = new BTreeNode(this.t, split.leaf);
+
 		// Copy leaf data to sibling
 		sibling.keys = new ArrayList<Long>(split.keys);
 		sibling.values = new ArrayList<Long>(split.values);
@@ -198,6 +192,7 @@ class BTree {
 			}
 			sibling.n--;
 		}
+    
 		for (int i = t; i < split.keys.size(); i++) {
 			split.keys.remove(split.keys.get(i));
 			if(split.leaf) {
@@ -205,6 +200,7 @@ class BTree {
 			}
 			split.n--;
 		}
+      
 		// Remove duplicate pointers
 		if(!split.leaf) {
 			for (int i = 0; i <= t; i++) {
@@ -213,11 +209,13 @@ class BTree {
 			for (int i = t + 1; i < split.children.size(); i++) {
 				split.children.remove(split.children.get(i));
 			}
+      
 			if(sibling.children.size() != sibling.n + 1  ) { //&& sibling.children.get(0).leaf
 				splitNode(sibling, sibling.children.get(sibling.n - 1));
 				sibling.keys.remove(sibling.keys.size() - 2);
 				sibling.n--;
 			}
+      
 			else if(sibling.children.size() != sibling.n) {
 				// splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
 			}
@@ -230,9 +228,6 @@ class BTree {
 		// Move key to parent
 		parent.keys.add(sibling.keys.get(0));
 		parent.n++;
-	    		
-
-        // TO PRINT A STUDENT TO THE CSV, CALL printStudentCSV(student)
 
         return this;
     }
@@ -261,9 +256,70 @@ class BTree {
          * Also, delete in student.csv after deleting in B+Tree, if it exists.
          * Return true if the student is deleted successfully otherwise, return false.
          */
+      
+        // empty tree
+        BTreeNode currNode = this.root;
+      
+        return true;
+    }
+
+    boolean delete_recursion(BTreeNode parentNode, BTreeNode currNode, long studentId) {
+        
+        
+        //////if the current node is an internal node, then go down the tree to find child node///////
+        if(!currNode.leaf) {
+            
+            // if the current key matches the studentId
+            for(int i = 0; i < currNode.n; i++) {
+                if(studentId == currNode.keys.get(i) ) {
+                    // continue down the tree to find the correct node
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+    
+                // find the first key that is greater than studentId
+                else if (studentId < currNode.keys.get(i)) {
+                    // continue down the tree to find the correct node  
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+                //if the studentId is greater than the largest key of the current node
+                else if (studentId > currNode.keys.get(i) && i >= currNode.n - 1) {
+                    
+                    // continue down the tree to find the correct node
+                    return delete_recursion(currNode, currNode.children.get(i), studentId);
+                }
+
+            }
+        }
+        //////////// if the current node is a child node/////////////////////////////////
+        else if(currNode.leaf) {
+            //find the key
+            for(int i = 0; i < currNode.n; i++) {
+                // if the key to be deleted is found. 
+                if(studentId == currNode.keys.get(i)) {
+                    // delete records
+                    currNode.values.remove(i);
+                    // delete key
+                    currNode.keys.remove(i);
+                    // decrement number of keys in leaf node
+                    --currNode.n;
+                }
+            }
+
+            // after removing key
+            //if the number of keys in the current node sastifies the min degree, done
+            if(currNode.n >= this.t) {
+                return true;
+            }
+            else {
+                // check if redistribution is possible
+            }
+
+        }
 
         return true;
     }
+
+    
 
     List<Long> print() {
 
@@ -330,14 +386,16 @@ class BTree {
             String toDelete = String.valueOf(studentID);
 
             // Set path to file
-            Path pathToFile = Paths.get("Student.csv");
+            File oldFile = new File("student.csv");
+            Path pathToFile = Paths.get("student.csv");
 
             // Iterate through the old file's students
             // Create BufferedReader
             try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 
                 // Open a temporary file for writing to, and the old student.csv file
-                FileWriter newFileWTR = new FileWriter("newStudent.csv");
+                File newFile = new File("newStudent.csv");
+                FileWriter newFileWTR = new FileWriter(newFile);
 
                 String line = br.readLine();
 
@@ -345,22 +403,36 @@ class BTree {
 
                     // If studentID does not match this line, add the line to the new CSV
                     if (!line.contains(toDelete)) {
-
-
+                        newFileWTR.append(line + "\n");
                     }
-
 
                     // Set next line to be read
                     line = br.readLine();
                 }
 
+                // Close the files
+                newFileWTR.flush();
+                newFileWTR.close();
+
+                // Rename temporary file to new file
+                oldFile = new File("student.csv");
+
+                // Remove the old file
+                if (!oldFile.delete()) {
+                    System.out.println("Could not delete old student.csv");
+                }
+
+                // Rename temporary file to new file
+                oldFile = new File("student.csv");
+
+                if (!newFile.renameTo(oldFile)) {
+                    System.out.println("Did not rename new student.csv successfully");
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
-
-        //close the files
-        //remove the file
-        //rename the temporary file to the original filename
 
         // Return true if no exceptions are thrown
         return true;
