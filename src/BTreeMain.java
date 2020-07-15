@@ -32,14 +32,14 @@ public class BTreeMain {
 
         /** Read the minimum degree of B+Tree first */
 
-         int degree = scan.nextInt();
+        int degree = scan.nextInt();
+        scan.nextLine();  // Skips the rest of the first line
+        scan.nextLine();
 
-         BTree bTree = new BTree(degree);
+        BTree bTree = new BTree(degree);
 
         /** Reading the database student.csv into B+Tree Node*/
         List<Student> studentsDB = getStudents();
-
-        System.out.println(studentsDB);
 
         for (Student s : studentsDB) {
             bTree.insert(s);
@@ -63,7 +63,7 @@ public class BTreeMain {
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
                             /** DONE -- TODO: Write a logic to generate recordID*/
-                            long recordID = Math.abs(rand.nextInt());
+                            long recordID = s2.nextInt();
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
@@ -139,6 +139,11 @@ public class BTreeMain {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // TODO remove
+        for (Student student : studentList) {
+            System.out.println(student.studentName + ", " + student.studentId);
         }
 
         return studentList;
