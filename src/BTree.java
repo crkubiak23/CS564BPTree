@@ -34,6 +34,65 @@ class BTree {
          * Return recordID for the given StudentID.
          * Otherwise, print out a message that the given studentId has not been found in the table and return -1.
          */
+        /**
+         * TODO:
+         * Implement this function to search in the B+Tree.
+         * Return recordID for the given StudentID.
+         * Otherwise, print out a message that the given studentId has not been found in the table and return -1.
+         */
+
+        // empty tree
+        if(this.root == null) {
+            System.out.println("Empty Tree");
+            return -1;
+        }
+
+        BTreeNode currNode = this.root;
+
+        for(int i = 0; i < currNode.n; i++) {
+            
+            //if the current node is not a leaf node
+            if(!currNode.leaf) {
+
+                // if the current key matches the studentId
+                if(studentId == currNode.keys.get(i) ) {
+                    currNode = currNode.children.get(i);
+                    i = 0; // reset i for child node
+                }
+
+                // find the first key that is greater than studentId
+                else if (studentId < currNode.keys.get(i)) {
+                    currNode = currNode.children.get(i);
+                    i = 0; // reset i for child node 
+                }
+                //if the studentId is greater than the largest key of the current node
+                else if (studentId > currNode.keys.get(i) && i >= currNode.n - 1) {
+                    currNode = currNode.children.get(i);
+                    i =0; // reset i for child node
+                }
+            }
+
+            else if(currNode.leaf) {
+
+                // found target studentId
+                if(currNode.keys.get(i) == studentId) {
+                    return currNode.values.get(i);
+                }
+                
+                // if the studentId is less than the first key of leaf node
+                else if (studentId < currNode.keys.get(i) && i <= 0) {
+                    
+                    //studentId doesn't exist in tree
+                    return -1;
+                }
+                else if(studentId > currNode.keys.get(i) && i >= currNode.n - 1) {
+
+                    //studentId doesn't exist in tree
+                    return -1;
+                }
+            }
+
+        }
         return -1;
     }
 
