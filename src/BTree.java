@@ -355,8 +355,8 @@ class BTree {
         BTreeNode currentNode = this.root;
 
         // While node has a child, move to the child node
-        while(!root.children.isEmpty()) {
-            currentNode = root.children.get(0);
+        while(!currentNode.children.isEmpty()) {
+            currentNode = currentNode.children.get(0);
         }
 
         // Start by going through current node, and move to next node if applicable
