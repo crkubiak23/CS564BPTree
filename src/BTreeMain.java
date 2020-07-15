@@ -34,7 +34,7 @@ public class BTreeMain {
 
          int degree = scan.nextInt();
 
-         BTree bTree = new BTree(1);
+         BTree bTree = new BTree(degree);
 
         /** Reading the database student.csv into B+Tree Node*/
         List<Student> studentsDB = getStudents();
@@ -115,7 +115,7 @@ public class BTreeMain {
         List<Student> studentList = new ArrayList<>();
 
         // Set path to file
-        Path pathToFile = Paths.get("Student.csv");
+        Path pathToFile = Paths.get("student.csv");
 
         // Create BufferedReader
         try (BufferedReader br = Files.newBufferedReader(pathToFile)) {

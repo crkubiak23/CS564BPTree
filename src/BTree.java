@@ -129,6 +129,7 @@ class BTree {
 
 		// If there are too many key/values in the root, add the new node and split node
 		if(this.root.n >= t * 2) {
+
 			BTreeNode newRoot = new BTreeNode(this.t, false); // Create new root
 		    newRoot.children.add(this.root); // Add old root to new.children
 		    this.root = newRoot; // Make new root this.root
