@@ -114,7 +114,7 @@ class BTree {
          * Also, insert in student.csv after inserting in B+Tree.
          */
 
-    	// Check for empty tree
+    		// Check for empty tree
 		if(this.root == null) {
 			
 			// Create root node
@@ -131,23 +131,23 @@ class BTree {
 
 		// Call helper method
 		nodeInsert(this.root, student);
-
 		return this;
-}
+    }
 
-BTree nodeInsert(BTreeNode current, Student student) {
+    BTree nodeInsert(BTreeNode current, Student student) {
 	
 		int index = 0;
 		while(index < current.n && current.keys.get(index)<student.studentId) {
-		    index++;
-	    }
+
+			index++;
+		}
 		
 		// Place in leaf node
 		if(current.leaf) {
 			current.keys.add(index, student.studentId);
-		    current.values.add(index, student.recordId);
-		    current.n++;
-		    return this;
+			current.values.add(index, student.recordId);
+			current.n++;
+			return this;
 		}
 		
 		// Find child
@@ -155,16 +155,24 @@ BTree nodeInsert(BTreeNode current, Student student) {
 		
 		// Child is full
 		if(child.n >= t * 2) {
+//			if(this.root.n >= t * 2 && current == this.root) {
+//				BTreeNode newRoot = new BTreeNode(this.t, false);
+//				newRoot.children.add(this.root);
+//				this.root = newRoot;
+//				splitNode(this.root, this.root.children.get(0));
+//			}
+//			else {
 			splitNode(current, child);
+//			}
 			return nodeInsert(current, student);
 		}
 		
 		// Insert into child
 		nodeInsert(child, student);
 		return this;
-}
+    }
 
-BTree splitNode(BTreeNode parent, BTreeNode split) {
+    BTree splitNode(BTreeNode parent, BTreeNode split) {
 
 		// Create sibling node
 		BTreeNode sibling = new BTreeNode(this.t, split.leaf);
@@ -183,16 +191,16 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 				sibling.values.remove(split.values.get(i));
 			}
 			sibling.n--;
-	    }
-
+		}
+    
 		for (int i = t; i < split.keys.size(); i++) {
 			split.keys.remove(split.keys.get(i));
 			if(split.leaf) {
 				split.values.remove(split.values.get(i));
 			}
 			split.n--;
-	    }
-
+		}
+      
 		// Remove duplicate pointers
 		if(!split.leaf) {
 			for (int i = 0; i <= t; i++) {
@@ -201,13 +209,15 @@ BTree splitNode(BTreeNode parent, BTreeNode split) {
 			for (int i = t + 1; i < split.children.size(); i++) {
 				split.children.remove(split.children.get(i));
 			}
-			if(sibling.children.size() != sibling.n + 1  && sibling.children.get(0).leaf) {
-			splitNode(sibling, sibling.children.get(sibling.n - 1));
-			sibling.keys.remove(sibling.keys.size() - 2);
-			sibling.n--;
-		    }
+      
+			if(sibling.children.size() != sibling.n + 1  ) { //&& sibling.children.get(0).leaf
+				splitNode(sibling, sibling.children.get(sibling.n - 1));
+				sibling.keys.remove(sibling.keys.size() - 2);
+				sibling.n--;
+			}
+      
 			else if(sibling.children.size() != sibling.n) {
-				splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
+				// splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
 			}
 		}
 		
