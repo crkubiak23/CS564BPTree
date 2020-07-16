@@ -26,6 +26,7 @@ class BTree {
      **/
     private int t;
 
+    // BTree constructor
     BTree(int t) {
         this.root = null;
         this.t = t;
@@ -102,32 +103,14 @@ class BTree {
 
     BTree insert(Student student) {
 
-        /*
-        * PSEUDOCODE:
-        *  - Find the correct leaf node L; i.e. the leaf with the correct search key range
-           - Insert data entry in L
-                - If L has space, DONE!
-                - Else, split L (into L and a new node L2)
-                    - Redistribute keys evenly, copy up middle key (maybe not, see link)
-                    - Insert index entry pointing to L2 into parent of L
-
-                    * Note: See https://piazza.com/class/kazti64mw836ud?cid=211 for more details.
-        * */
-
-        /**
-         * TODO:
-         * Implement this function to insert in the B+Tree.
-         * Also, insert in student.csv after inserting in B+Tree.
-         */
-
-    		// Check for empty tree
+        // Check for empty tree
 		if(this.root == null) {
 			
 			// Create root node
 			this.root = new BTreeNode(this.t, true);
 		}
 
-		// If there are too many key/values in the root, add the new node and split node
+		// If there are too many key/value pairs in the root, add the new node and split node
 		if(this.root.n >= t * 2) {
 
 			BTreeNode newRoot = new BTreeNode(this.t, false); // Create new root
@@ -143,8 +126,11 @@ class BTree {
     }
 
     BTree nodeInsert(BTreeNode current, Student student) {
-	
-    		// Find the index where the key belongs, this can be used for children if it is an internal node
+
+        // Add the student to student.csv
+        printStudentCSV(student);
+
+        // Find the index where the key belongs, this can be used for children if it is an internal node
 		int index = 0;
 		while(index < current.n && current.keys.get(index)<student.studentId) {
 			index++;
@@ -161,7 +147,7 @@ class BTree {
 		// Find child node where key belongs
 		BTreeNode child = current.children.get(index);
 		
-		// Child is full
+		// If child is full...
 		if(child.n >= t * 2) {
 			splitNode(current, child); // Split full child into two children of current
 			return nodeInsert(current, student); // Call insert on freshly split node and return
@@ -242,29 +228,6 @@ class BTree {
 
     boolean delete(long studentId) {
 
-        /*
-         - Find the correct leaf node L where entry belongs
-         - Remove the entry
-            - If L is at least half-full, DONE!
-            - If L has only d-1 entries
-                - Try to redistribute, borrowing from sibling
-                - If redistribution fails, merge L and sibling
-         - If a merge occurred, delete an entry from parent of L
-         - Merge could propagate to root, decreasing height
-         - Try redistribution with all siblings first, then merge.
-            - Good chance that redistribution is possible (large fan-out)
-            - Only need to propagate changes to the immediate parent node
-            - Reduces likelihood of split on subsequent insertions (files typically grow, not shrink)
-                - Since pages would have more space on them
-         */
-
-        /**
-         * TODO:
-         * Implement this function to delete in the B+Tree.
-         * Also, delete in student.csv after deleting in B+Tree, if it exists.
-         * Return true if the student is deleted successfully otherwise, return false.
-         */
-      
         // empty tree
         if(this.root == null) {
             return false;
@@ -276,10 +239,13 @@ class BTree {
     }
 
     boolean delete_recursion(BTreeNode parentNode, BTreeNode currNode, long studentId) {
+
+        // Delete the student from student.csv
+        deleteStudentCSV(studentId);
+
+        /* Finding the correct leaf node */
         
-        ///////finding the correct leaf node//////////////////////////////////////////////////
-        
-        //////if the current node is an internal node, then go down the tree to find child node
+        // If the current node is an internal node, then go down the tree to find child node
         if(!currNode.leaf) {
             
             // if the current key matches the studentId
@@ -300,10 +266,10 @@ class BTree {
                     // continue down the tree to find the correct node
                     return delete_recursion(currNode, currNode.children.get(i), studentId);
                 }
-
             }
         }
-        //////////// if the current node is a child node/////////////////////////////////
+
+        /* if the current node is a child node */
         else if(currNode.leaf) {
             //find the key
             for(int i = 0; i < currNode.n; i++) {
@@ -317,9 +283,9 @@ class BTree {
                     --currNode.n;
                 }
             }
-        ///////////////// finding the correct leaf node (end) ///////////////////////////
+        /* finding the correct leaf node (end) */
         
-            // after removing key
+            /* after removing key */
             //if the number of keys in the current node sastifies the min degree, done
             if(currNode.n >= this.t) {
                 return true;
@@ -327,7 +293,6 @@ class BTree {
             else {
                 // check if redistribution is possible
             }
-
         }
 
         return true;
@@ -336,13 +301,6 @@ class BTree {
     List<Long> print() {
 
         List<Long> listOfRecordID = new ArrayList<>();
-
-        /**
-         * DONE -- TODO:
-         * Implement this function to print the B+Tree.
-         * Return a list of recordIDs from left to right of leaf nodes.
-         *
-         */
 
         // Start at root
         BTreeNode currentNode = this.root;
