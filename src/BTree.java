@@ -163,15 +163,7 @@ class BTree {
 		
 		// Child is full
 		if(child.n >= t * 2) {
-//			if(this.root.n >= t * 2 && current == this.root) {
-//				BTreeNode newRoot = new BTreeNode(this.t, false);
-//				newRoot.children.add(this.root);
-//				this.root = newRoot;
-//				splitNode(this.root, this.root.children.get(0));
-//			}
-//			else {
 			splitNode(current, child); // Split full child into two children of current
-//			}
 			return nodeInsert(current, student); // Call insert on freshly split node and return
 		}
 		
@@ -202,10 +194,11 @@ class BTree {
 		}
 		
 		// Remove duplicate keys from split (t to keys.size() - 1)
-		for (int i = t; i < split.keys.size(); i++) {
-			split.keys.remove(split.keys.get(i));
+		int j = split.keys.size() - t;
+		for (int i = 0; i < j; i++) {
+			split.keys.remove(t);
 			if(split.leaf) {
-				split.values.remove(split.values.get(i));
+				split.values.remove(t);
 			}
 			split.n--;
 		}
@@ -213,12 +206,13 @@ class BTree {
 		// Remove duplicate pointers if internal
 		if(!split.leaf) {
 			// From 0 to t for sibling
-			for (int i = 0; i <= t; i++) {
-				sibling.children.remove(split.children.get(i));
+			for (int i = 0; i < t; i++) {
+				sibling.children.remove(0);
 			}
 			// From t + 1 to end for split
-			for (int i = t + 1; i < split.children.size(); i++) {
-				split.children.remove(split.children.get(i));
+			int x = split.children.size() - t;
+			for (int i = 0; i < x; i++) {
+				split.children.remove(t);
 			}
       
 			// This might need some work:
