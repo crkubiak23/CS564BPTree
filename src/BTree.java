@@ -138,6 +138,7 @@ class BTree {
 
 		// Call helper method to insert student
 		nodeInsert(this.root, student);
+
 		return this;
     }
 
@@ -338,8 +339,6 @@ class BTree {
         return true;
     }
 
-    
-
     List<Long> print() {
 
         List<Long> listOfRecordID = new ArrayList<>();
@@ -365,7 +364,8 @@ class BTree {
             for (int i = 0; i < currentNode.values.size(); i++) {
                 listOfRecordID.add(currentNode.values.get(i));
             }
-        } while (currentNode.next != null);
+            currentNode = currentNode.next;
+        } while (currentNode != null);
 
         return listOfRecordID;
     }
