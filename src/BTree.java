@@ -189,32 +189,6 @@ class BTree {
 			split.n--;
 		}
       
-		// Remove duplicate pointers if internal
-		if(!split.leaf) {
-			// From 0 to t for sibling
-			for (int i = 0; i < t; i++) {
-				sibling.children.remove(0);
-			}
-			// From t + 1 to end for split
-			int x = split.children.size() - t;
-			for (int i = 0; i < x; i++) {
-				split.children.remove(t);
-			}
-      
-			// This might need some work:
-			// if an internal node is being split, and the sibling has less than n + 1 child pointers, it will split one of the child's children to make sure the node meets the child requirements
-			if(sibling.children.size() != sibling.n + 1  ) { //&& sibling.children.get(0).leaf
-				splitNode(sibling, sibling.children.get(sibling.n - 1));
-				sibling.keys.remove(sibling.keys.size() - 2); // The above split adds another updated key to sibling, so remove the old one, and decrement the counter
-				sibling.n--;
-			}
-      
-			// Not used currently
-			else if(sibling.children.size() != sibling.n) {
-				// splitNode(sibling.children.get(sibling.n - 1), sibling.children.get(sibling.n - 1).children.get(sibling.children.get(sibling.n - 1).n));
-			}
-		}
-		
 		// Assign new child pointer from parent to sibling
 		int childIndex = parent.children.indexOf(split) + 1;
 		parent.children.add(childIndex, sibling);
@@ -222,6 +196,21 @@ class BTree {
 		// Add sibling key to parent
 		parent.keys.add(sibling.keys.get(0));
 		parent.n++;
+		
+		// Remove duplicate pointers if internal
+		if(!split.leaf) {
+			// From 0 to t for sibling
+			for (int i = 0; i <= t; i++) {
+				sibling.children.remove(0);
+			}
+			// From t + 1 to end for split
+			for (int i = 0; i < t; i++) {
+				split.children.remove(t + 1);
+			}
+			
+			sibling.keys.remove(0);
+			sibling.n--;
+		}
 
         return this;
     }
