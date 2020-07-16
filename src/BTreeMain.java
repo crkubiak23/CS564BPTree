@@ -47,7 +47,7 @@ public class BTreeMain {
 
         /** Start reading the operations now from input file*/
         try {
-            while (scan.hasNextLine()) {
+        		while (scan.hasNextLine()) {
                 Scanner s2 = new Scanner(scan.nextLine());
 
                 while (s2.hasNext()) {
